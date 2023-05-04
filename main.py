@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 from API import verification
+from student.Dashboard import Dashboard
 
 app = Flask(__name__)
 
@@ -16,6 +17,18 @@ CORS(app, expose_headers="content-disposition", supports_credentials=True)
 @app.route("/")
 def hello():
     return "Student Portal API"
+
+
+@app.route('/Dashboard/Data/', methods=['GET', 'POST'])
+def dashboard():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Dashboard().Data(request.headers)
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
 
 
 def run():
