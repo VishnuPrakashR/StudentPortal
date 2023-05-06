@@ -11,8 +11,8 @@ import pymongo
 class Mongo:
     # Setting database
     def __init__(self, collection):
-        server1 = self.server1 = pymongo.MongoClient("mongodb://172.17.0.2:27017/")
-        database = server1['students']
+        server1 = self.server1 = pymongo.MongoClient("mongodb://172.17.0.4:27017/")
+        database = server1['students-portal-db']
         self.collection = database[collection]
 
     # Get all values from defined collection
@@ -33,7 +33,7 @@ class Mongo:
     def put(self, data):
         collection = self.collection
         response = collection.insert_one(data)
-        self.server1.close()
+        # self.server1.close()
         return response
 
     # Put data into collection
@@ -46,7 +46,7 @@ class Mongo:
     # Update data
     def set(self, condition, data, upsert=False):
         collection = self.collection
-        response = collection.update(condition, {"$set": data}, upsert=upsert)
+        response = collection.update_one(condition, {"$set": data}, upsert=upsert)
         # self.server1.close()
         return response
 
@@ -54,7 +54,7 @@ class Mongo:
     def inc(self, condition, data, upsert=False):
         collection = self.collection
         response = collection.update(condition, {"$inc": data}, upsert=upsert)
-        self.server1.close()
+        # self.server1.close()
         return response
 
     def setmany(self, condition, data, upsert=False):

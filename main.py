@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 from API import verification
-from student.Dashboard import Dashboard
+from student import Dashboard, Register, Course, Fees
 
 app = Flask(__name__)
 
@@ -19,13 +19,97 @@ def hello():
     return "Student Portal API"
 
 
+@app.route('/register/', methods=['POST'])
+def register():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Register.Register().register(request.form)
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
+
+
 @app.route('/Dashboard/Data/', methods=['GET', 'POST'])
 def dashboard():
     apiKey = request.headers.get("X-API-Key")
     referer = request.headers.get("Referer")
     apiResponse = verification().verify(apiKey, referer)
     if apiResponse.get("Verified"):
-        response = Dashboard().Data(request.headers)
+        response = Dashboard.Dashboard(request.headers).Data()
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
+
+
+@app.route('/Dashboard/Enroll/', methods=['GET', 'POST'])
+def enroll_data():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Dashboard.Dashboard(request.headers).EnrollData()
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
+
+
+@app.route('/Course/Enroll/', methods=['POST'])
+def enroll():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Course.Enrollment(request.headers).Enroll(request.form)
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
+
+
+@app.route('/Fees/', methods=['GET', 'POST'])
+def all_fees():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Fees.Fees(request.headers).All()
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
+
+
+@app.route('/Fees/Pay/', methods=['POST'])
+def pay_fees():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Fees.Fees(request.headers).Pay(request.form)
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
+
+
+@app.route('/Course/EnrollmentData/', methods=['GET', 'POST'])
+def enrollment_data():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Course.Enrollment(request.headers).Data()
+    else:
+        response = jsonify({"Response": apiResponse.get("Msg")}), 401
+    return response
+
+
+@app.route('/Course/Graduate/', methods=['POST'])
+def graduate():
+    apiKey = request.headers.get("X-API-Key")
+    referer = request.headers.get("Referer")
+    apiResponse = verification().verify(apiKey, referer)
+    if apiResponse.get("Verified"):
+        response = Course.Enrollment(request.headers).Graduate(request.form)
     else:
         response = jsonify({"Response": apiResponse.get("Msg")}), 401
     return response
