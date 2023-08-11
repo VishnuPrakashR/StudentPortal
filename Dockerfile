@@ -3,7 +3,6 @@ FROM python:3.11-alpine
 RUN pip install --upgrade pip
 
 RUN apk update
-RUN apk add git
 RUN apk add curl
 
 # Copy the content of the project directory to the working directory

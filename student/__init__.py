@@ -38,6 +38,7 @@ class API(Request):
             'Content-Type': 'application/json'
         }
         response = self.get_api(path='finance/accounts/', formJson=formData, method='POST', headers=headers)
+        print(response)
         apiResponse = json.loads(response)
         return apiResponse
 
@@ -64,6 +65,7 @@ class API(Request):
             'Content-Type': 'application/json'
         }
         response = self.get_api(path='finance/invoices/', formJson=formData, method='POST', headers=headers)
+        print(response, self.studentId)
         apiResponse = json.loads(response)
         refNum = apiResponse.get("reference")
         invoice = {
